@@ -1,95 +1,93 @@
 /**
- * App entry — loads app.config.json (via the Electron preload bridge, with a
- * web fallback for plain `vite` development) and renders the themed screen.
+ * Root App — providers + bottom tab navigation (Notes / Todos).
+ * Mirrors the RN template (app/index.tsx).
  */
 
-import { useEffect, useState } from 'react';
-import { AppScreen } from './AppScreen';
-import { useAppTheme } from './useAppTheme';
-import type { AppConfig } from './types';
+import { useState } from 'react';
+import { AppProvider } from './contexts/AppContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { BrandBar } from './components/BrandBar';
+import { NotesScreen } from './screens/NotesScreen';
+import { TodosScreen } from './screens/TodosScreen';
 
-interface WindowWithBridge {
-  tgen?: {
-    getConfig: () => Promise<AppConfig>;
-    configLoaded: (cfg: AppConfig) => void;
-  };
+type Tab = 'notes' | 'todos';
+
+const TABS: { key: Tab; label: string; glyph: string }[] = [
+  { key: 'notes', label: 'Notes', glyph: '🗒' },
+  { key: 'todos', label: 'Todos', glyph: '✅' },
+];
+
+function Shell() {
+  const [tab, setTab] = useState<Tab>('notes');
+  const { colors } = useTheme();
+
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: colors.background,
+        color: colors.text,
+        fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+      }}>
+      <BrandBar />
+
+      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        {tab === 'notes' ? <NotesScreen /> : <TodosScreen />}
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          borderTop: `1px solid ${colors.border}`,
+          background: colors.surface,
+          paddingTop: 8,
+        }}>
+        {TABS.map(t => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2,
+                padding: '4px 0 8px',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                color: active ? colors.accent : colors.textMuted,
+                fontWeight: active ? 700 : 400,
+              }}>
+              <span style={{ fontSize: 18 }}>{t.glyph}</span>
+              <span style={{ fontSize: 12 }}>{t.label}</span>
+              <span
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: 2,
+                  background: active ? colors.accent : 'transparent',
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
-const FALLBACK_CONFIG: AppConfig = {
-  schemaVersion: 1,
-  appName: 'TGen App',
-  slug: 'tgen-app',
-  theme: 'light',
-  primaryColor: '#3B82F6',
-  logoUrl: 'assets/logo.png',
-  supportEmail: 'support@example.com',
-  platforms: ['windows'],
-  packageName: 'com.tgenapp',
-  version: '1.0.0',
-};
-
 export default function App() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    const bridge = (window as WindowWithBridge).tgen;
-
-    async function load() {
-      try {
-        const cfg = bridge ? await bridge.getConfig() : FALLBACK_CONFIG;
-        if (cancelled) return;
-        setConfig(cfg);
-        bridge?.configLoaded(cfg);
-      } catch (err) {
-        if (cancelled) return;
-        console.error('Failed to load config:', err);
-        setError(err instanceof Error ? err.message : String(err));
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const theme = useAppTheme(config ?? FALLBACK_CONFIG);
-
-  if (error) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Segoe UI, system-ui, sans-serif',
-          background: theme.palette.background,
-          color: theme.palette.textPrimary,
-        }}>
-        <p>Failed to load app config: {error}</p>
-      </div>
-    );
-  }
-
-  if (!config) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Segoe UI, system-ui, sans-serif',
-          background: theme.palette.background,
-          color: theme.palette.textPrimary,
-        }}>
-        <p>Loading…</p>
-      </div>
-    );
-  }
-
-  return <AppScreen config={config} theme={theme} />;
+  return (
+    <ThemeProvider>
+      <AppProvider>
+        <Shell />
+      </AppProvider>
+    </ThemeProvider>
+  );
 }

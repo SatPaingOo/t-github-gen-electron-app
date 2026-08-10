@@ -1,11 +1,15 @@
 /**
- * TGen Electron template — config-driven desktop app (Windows MVP).
- * main process, built as CJS (Electron main scripts cannot use ESM import).
+ * TGen Electron template — main process.
+ * - loads app branding from app.config.json (window title / icon)
+ * - owns the SQLite database (better-sqlite3) and serves it to the renderer
+ *   through synchronous IPC (tgen:db) — the renderer's shared DbAdapter
+ *   contract stays synchronous, same as the RN side.
  */
 
 const { app, BrowserWindow, shell, ipcMain } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
+const { createService } = require('./db');
 
 function loadConfig() {
   const configPath = path.join(app.getAppPath(), 'app.config.json');
@@ -22,24 +26,26 @@ function loadConfig() {
 }
 
 const config = loadConfig();
-
-// Branding hook: called after the renderer signals it has read app.config.json.
-function onRendererConfig(cfg) {
-  try {
-    if (cfg.appName && cfg.appName !== app.getName()) {
-      app.setName(cfg.appName);
-      // Windows: visible taskbar/window title
-      const win = BrowserWindow.getAllWindows()[0];
-      if (win) {
-        win.setTitle(cfg.appName);
-      }
-    }
-  } catch (err) {
-    console.warn('[main] failed to apply renderer config:', err.message);
-  }
-}
-
+let dbService = null;
 let mainWindow = null;
+
+function registerDbHandlers() {
+  dbService = createService(app.getPath('userData'));
+
+  // Synchronous IPC so the renderer's DbAdapter contract stays synchronous.
+  ipcMain.on('tgen:db', (event, payload) => {
+    const { op, args = [] } = payload || {};
+    if (!dbService || typeof dbService[op] !== 'function') {
+      event.returnValue = { error: `unknown db op: ${op}` };
+      return;
+    }
+    try {
+      event.returnValue = { data: dbService[op](...args) };
+    } catch (err) {
+      event.returnValue = { error: err.message };
+    }
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -49,7 +55,7 @@ function createWindow() {
     minHeight: 480,
     title: config.appName,
     icon: path.join(__dirname, '..', 'build', 'icon.ico'),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F1F5F9',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -82,10 +88,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // IPC bridge used by preload.js
-  ipcMain.handle('tgen:get-config', () => config);
-  ipcMain.on('tgen:config-loaded', (_event, cfg) => onRendererConfig(cfg));
-
+  registerDbHandlers();
   createWindow();
 
   app.on('activate', () => {
@@ -100,9 +103,3 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-// Exposed for the renderer via preload.
-module.exports = {
-  loadConfig,
-  onRendererConfig,
-};
