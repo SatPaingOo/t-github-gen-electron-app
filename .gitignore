@@ -1,0 +1,13 @@
+# dependencies / build outputs
+node_modules/
+dist/
+release/
+out/
+*.log
+
+# electron-builder output
+build/icon.ico
+
+# misc
+.DS_Store
+Thumbs.db

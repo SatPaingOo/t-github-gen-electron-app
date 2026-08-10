@@ -1,0 +1,86 @@
+name: build-windows
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only one build per repo at a time (repo is single-purpose: one generated app)
+concurrency:
+  group: build-windows
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply app branding (app.config.json -> package.json / index.html / icon.ico)
+        run: node scripts/generate.mjs
+
+      - name: Commit generated changes
+        run: |
+          git config user.name "tgen-bot"
+          git config user.email "tgen-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No branding changes to commit"
+          else
+            # [skip ci] prevents this push from re-triggering the workflow (double build)
+            git commit -m "chore: apply app branding from app.config.json [skip ci]"
+            git push
+          fi
+
+  windows:
+    needs: generate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build installer (exe)
+        run: npm run dist:win
+
+      - name: Locate installer
+        id: exe
+        shell: bash
+        run: |
+          EXE=$(ls dist/*.exe 2>/dev/null | head -1)
+          if [ -z "$EXE" ]; then
+            EXE=$(find . -name "*.exe" -path "*dist*" | head -1)
+          fi
+          echo "path=$EXE" >> "$GITHUB_OUTPUT"
+          echo "EXE path: $EXE"
+
+      - name: Upload installer as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: dist/*.exe
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: windows-v1.0.0
+          name: Windows Installer
+          body: |
+            Generated app — Windows x64 installer (NSIS).
+          files: dist/*.exe
