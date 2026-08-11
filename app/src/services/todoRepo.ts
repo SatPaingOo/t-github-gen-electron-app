@@ -5,9 +5,9 @@
  * @format
  */
 
-import { PRIORITY_META } from "@/configs/constants";
-import type { NewTodo, Todo, TodoPriority } from "@/services/types";
-import type { DbAdapter } from "@/services/db/types";
+import { PRIORITY_META } from '@/configs/constants';
+import type { NewTodo, Todo, TodoPriority } from '@/services/types';
+import type { DbAdapter } from '@/services/db/types';
 
 export function createTodoRepo(db: DbAdapter) {
   return {

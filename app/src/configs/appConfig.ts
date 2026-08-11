@@ -7,9 +7,9 @@
  * @format
  */
 
-import rawConfig from "@appConfig";
+import rawConfig from '@appConfig';
 
-export type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 export interface AppConfig {
   schemaVersion: number;

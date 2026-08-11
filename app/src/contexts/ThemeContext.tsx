@@ -16,13 +16,13 @@ import {
   useMemo,
   useState,
   type ReactNode,
-} from "react";
-import { appConfig } from "@/configs/appConfig";
-import { getThemeColors, type ThemeColors } from "@/configs/themes";
-import { resolvePalette } from "@/configs/constants";
+} from 'react';
+import { appConfig } from '@/configs/appConfig';
+import { getThemeColors, type ThemeColors } from '@/configs/themes';
+import { resolvePalette } from '@/configs/constants';
 
 interface ThemeContextValue {
-  palette: "light" | "dark";
+  palette: 'light' | 'dark';
   isDark: boolean;
   colors: ThemeColors;
   accent: string;
@@ -44,7 +44,7 @@ export function ThemeProvider({
     () => resolvePalette(appConfig.theme, systemDark),
     [systemDark],
   );
-  const isDark = palette === "dark";
+  const isDark = palette === 'dark';
 
   // Keep accent in sync when the override changes
   const accent = override ?? appConfig.primaryColor;
@@ -67,6 +67,6 @@ export function ThemeProvider({
 
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
   return ctx;
 }

@@ -21,7 +21,7 @@ export interface NewNote {
   color: string;
 }
 
-export type TodoPriority = "low" | "medium" | "high";
+export type TodoPriority = 'low' | 'medium' | 'high';
 
 export interface Todo {
   id: string;

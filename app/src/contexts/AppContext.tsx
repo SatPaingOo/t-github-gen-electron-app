@@ -16,18 +16,18 @@ import {
   useRef,
   useState,
   type ReactNode,
-} from "react";
-import type { DbAdapter } from "@/services/db/types";
-import { sqliteAdapter } from "@/services/db";
-import { createNoteRepo } from "@/services/noteRepo";
-import { createTodoRepo } from "@/services/todoRepo";
+} from 'react';
+import type { DbAdapter } from '@/services/db/types';
+import { sqliteAdapter } from '@/services/db';
+import { createNoteRepo } from '@/services/noteRepo';
+import { createTodoRepo } from '@/services/todoRepo';
 import type {
   NewNote,
   NewTodo,
   Note,
   Todo,
   TodoPriority,
-} from "@/services/types";
+} from '@/services/types';
 
 interface AppContextValue {
   ready: boolean;
@@ -113,7 +113,7 @@ export function AppProvider({
 
   const toggleTodo = useCallback(
     (id: string) => {
-      const todo = todos.find((t) => t.id === id);
+      const todo = todos.find(t => t.id === id);
       if (todo) repos.todos.toggle(id, !todo.done);
       refresh();
     },
@@ -168,6 +168,6 @@ export function AppProvider({
 
 export function useApp(): AppContextValue {
   const ctx = useContext(AppContext);
-  if (!ctx) throw new Error("useApp must be used within AppProvider");
+  if (!ctx) throw new Error('useApp must be used within AppProvider');
   return ctx;
 }
