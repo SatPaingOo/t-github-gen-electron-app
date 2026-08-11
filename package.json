@@ -39,8 +39,8 @@
     "vitest": "^4.1.10"
   },
   "build": {
-    "appId": "{{PACKAGE_NAME}}",
-    "productName": "{{APP_NAME}}",
+    "appId": "com.tgenapp",
+    "productName": "TGen App",
     "copyright": "Generated with TGen",
     "directories": {
       "output": "dist",
