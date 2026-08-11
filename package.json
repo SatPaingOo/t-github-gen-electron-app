@@ -9,7 +9,7 @@
     "dev": "cd app && vite",
     "build:app": "cd app && vite build",
     "generate": "node scripts/generate.mjs",
-    "dist:win": "npm run build:app && electron-builder --win nsis",
+    "dist:win": "npm run build:app && electron-builder --win nsis --publish never",
     "lint": "eslint app/src --max-warnings=0",
     "typecheck": "cd app && tsc --noEmit",
     "test": "cd app && vitest run",
