@@ -94,6 +94,7 @@ function resolveConfig(raw) {
     slug: raw.slug || appName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
     packageName: sanitizePackageName(raw.packageName),
     primaryColor: sanitizeColor(raw.primaryColor || '#3B82F6'),
+    secondaryColor: sanitizeColor(raw.secondaryColor || '#64748B'),
     supportEmail: typeof raw.supportEmail === 'string' ? raw.supportEmail : 'support@example.com',
     version: sanitizeVersion(raw.version || '1.0.0'),
     theme: ALLOWED_THEMES.includes(raw.theme) ? raw.theme : 'light',
@@ -110,6 +111,7 @@ function tokenMap(cfg) {
     APP_NAME_JS: toPackageName(cfg.appName),
     PACKAGE_NAME: cfg.packageName,
     PRIMARY_COLOR: cfg.primaryColor,
+    SECONDARY_COLOR: cfg.secondaryColor,
     VERSION: cfg.version,
     SUPPORT_EMAIL: cfg.supportEmail,
   };

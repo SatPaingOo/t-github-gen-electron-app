@@ -8,5 +8,6 @@
   "supportEmail": "support@example.com",
   "platforms": ["windows"],
   "packageName": "com.tgenapp",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "secondaryColor": "#64748B"
 }
