@@ -9,19 +9,34 @@
     "dev": "cd app && vite",
     "build:app": "cd app && vite build",
     "generate": "node scripts/generate.mjs",
-    "dist:win": "npm run build:app && electron-builder --win nsis"
+    "dist:win": "npm run build:app && electron-builder --win nsis",
+    "lint": "eslint app/src --max-warnings=0",
+    "typecheck": "cd app && tsc --noEmit",
+    "test": "cd app && vitest run",
+    "test:ci": "cd app && vitest run --reporter=dot",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^35.0.0",
     "electron-builder": "^26.0.12",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.4",
+    "globals": "^17.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.35.3",
     "typescript": "^5.8.3",
-    "vite": "^6.0.0"
+    "typescript-eslint": "^8.67.0",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.10"
   },
   "build": {
     "appId": "{{PACKAGE_NAME}}",
@@ -58,5 +73,19 @@
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3"
+  },
+  "engines": {
+    "node": ">= 22.13.0",
+    "npm": ">= 10"
+  },
+  "packageManager": "npm@10.9.0",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

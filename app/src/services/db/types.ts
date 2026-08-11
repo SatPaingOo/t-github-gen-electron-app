@@ -1,11 +1,17 @@
 /**
  * Database adapter contract.
- * Mirrors the RN template (app/services/db/types.ts) — the same repo/context
- * logic runs on every platform. Operations are synchronous (the Electron
- * adapter uses sync IPC to better-sqlite3 in the main process).
+ *
+ * The repo layer only talks to this interface, so the same CRUD logic runs on
+ * every platform. Each platform provides a concrete adapter:
+ *   - React Native: app/services/db/opSqliteAdapter.ts (op-sqlite)
+ *   - Electron:     app/src/services/db/ (better-sqlite3 via IPC)
+ *
+ * All operations are synchronous so consumers never await.
+ *
+ * @format
  */
 
-import type { NewNote, NewTodo, Note, Todo } from '../types';
+import type { NewNote, NewTodo, Note, Todo } from "@/services/types";
 
 export interface DbAdapter {
   init(): void;
@@ -17,6 +23,9 @@ export interface DbAdapter {
   deleteNote(id: string): void;
   listTodos(): Todo[];
   insertTodo(todo: NewTodo): Todo;
-  updateTodo(id: string, patch: Partial<Pick<Todo, 'title' | 'done' | 'priority'>>): Todo | null;
+  updateTodo(
+    id: string,
+    patch: Partial<Pick<Todo, "title" | "done" | "priority">>,
+  ): Todo | null;
   deleteTodo(id: string): void;
 }

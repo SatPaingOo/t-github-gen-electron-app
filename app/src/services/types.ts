@@ -1,6 +1,9 @@
 /**
  * Shared domain types for the Notes + Todos app.
- * Mirrors the RN template (app/services/types.ts).
+ * Mirrored in the Electron template (electron template keeps its own copy
+ * because the two repos are generated independently).
+ *
+ * @format
  */
 
 export interface Note {
@@ -18,7 +21,7 @@ export interface NewNote {
   color: string;
 }
 
-export type TodoPriority = 'low' | 'medium' | 'high';
+export type TodoPriority = "low" | "medium" | "high";
 
 export interface Todo {
   id: string;

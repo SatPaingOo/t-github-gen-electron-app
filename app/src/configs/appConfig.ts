@@ -1,11 +1,15 @@
 /**
  * Typed access to the generated app's configuration.
- * Mirrors the RN template (app/configs/appConfig.ts) — same schema.
+ *
+ * `app.config.json` is pushed by the TGen website and is read at bundle time
+ * by Metro — no build step needed on the JS side.
+ *
+ * @format
  */
 
-import rawConfig from '../../../app.config.json';
+import rawConfig from "@appConfig";
 
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = "light" | "dark" | "system";
 
 export interface AppConfig {
   schemaVersion: number;

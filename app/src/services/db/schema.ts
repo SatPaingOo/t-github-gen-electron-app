@@ -1,6 +1,9 @@
 /**
  * SQLite schema shared by every platform (RN + Electron).
- * Mirrors the RN template (app/services/db/schema.ts) — must stay in sync.
+ *
+ * Timestamps are stored as UTC millisecond integers.
+ *
+ * @format
  */
 
 export const SCHEMA_SQL = `

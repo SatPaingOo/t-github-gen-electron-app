@@ -1,10 +1,12 @@
 /**
  * NoteRepository — CRUD for notes on top of the DbAdapter.
- * Mirrors the RN template (app/services/noteRepo.ts).
+ * Pure logic, no platform imports.
+ *
+ * @format
  */
 
-import type { NewNote, Note } from './types';
-import type { DbAdapter } from './db/types';
+import type { NewNote, Note } from "@/services/types";
+import type { DbAdapter } from "@/services/db/types";
 
 let uidCounter = 0;
 

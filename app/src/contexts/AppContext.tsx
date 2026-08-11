@@ -1,7 +1,10 @@
 /**
  * AppContext — owns the SQLite database (via the platform adapter) and exposes
  * Notes + Todos state with CRUD actions. Screens consume this only.
- * Mirrors the RN template (app/contexts/AppContext.tsx).
+ *
+ * The adapter is injected so tests can pass an in-memory mock.
+ *
+ * @format
  */
 
 import {
@@ -13,12 +16,18 @@ import {
   useRef,
   useState,
   type ReactNode,
-} from 'react';
-import type { DbAdapter } from '../services/db/types';
-import { createNoteRepo } from '../services/noteRepo';
-import { createTodoRepo } from '../services/todoRepo';
-import type { NewNote, NewTodo, Note, Todo, TodoPriority } from '../services/types';
-import { betterSqliteAdapter } from '../services/db/betterSqliteAdapter';
+} from "react";
+import type { DbAdapter } from "@/services/db/types";
+import { sqliteAdapter } from "@/services/db";
+import { createNoteRepo } from "@/services/noteRepo";
+import { createTodoRepo } from "@/services/todoRepo";
+import type {
+  NewNote,
+  NewTodo,
+  Note,
+  Todo,
+  TodoPriority,
+} from "@/services/types";
 
 interface AppContextValue {
   ready: boolean;
@@ -35,14 +44,20 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-export function AppProvider({ children, adapter }: { children: ReactNode; adapter?: DbAdapter }) {
+export function AppProvider({
+  children,
+  adapter,
+}: {
+  children: ReactNode;
+  adapter?: DbAdapter;
+}) {
   const [ready, setReady] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const dbRef = useRef<DbAdapter | null>(null);
   if (!dbRef.current) {
-    dbRef.current = adapter ?? betterSqliteAdapter;
+    dbRef.current = adapter ?? sqliteAdapter;
   }
   const repos = useMemo(() => {
     const db = dbRef.current!;
@@ -98,7 +113,7 @@ export function AppProvider({ children, adapter }: { children: ReactNode; adapte
 
   const toggleTodo = useCallback(
     (id: string) => {
-      const todo = todos.find(t => t.id === id);
+      const todo = todos.find((t) => t.id === id);
       if (todo) repos.todos.toggle(id, !todo.done);
       refresh();
     },
@@ -134,7 +149,18 @@ export function AppProvider({ children, adapter }: { children: ReactNode; adapte
       setTodoPriority,
       deleteTodo,
     }),
-    [ready, notes, todos, addNote, updateNote, deleteNote, addTodo, toggleTodo, setTodoPriority, deleteTodo],
+    [
+      ready,
+      notes,
+      todos,
+      addNote,
+      updateNote,
+      deleteNote,
+      addTodo,
+      toggleTodo,
+      setTodoPriority,
+      deleteTodo,
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
@@ -142,6 +168,6 @@ export function AppProvider({ children, adapter }: { children: ReactNode; adapte
 
 export function useApp(): AppContextValue {
   const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used within AppProvider');
+  if (!ctx) throw new Error("useApp must be used within AppProvider");
   return ctx;
 }

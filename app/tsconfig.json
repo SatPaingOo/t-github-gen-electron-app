@@ -11,7 +11,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@appConfig": ["../app.config.json"]
+    }
   },
   "include": ["src", "../app.config.json"]
 }
