@@ -23,7 +23,7 @@ export function BrandBar() {
       }}
     >
       {appConfig.appName}
-      <span style={{ opacity: 0.8, fontWeight: 500 }}> · TGen</span>
+      <span style={{ opacity: 0.8, fontWeight: 500 }}> · Powered by TGen</span>
     </div>
   );
 }

@@ -3,30 +3,31 @@
  * Mirrors the RN template (app/index.tsx).
  */
 
-import { useState } from "react";
-import { AppProvider } from "@/contexts/AppContext";
-import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
-import { BrandBar } from "@/components/BrandBar";
-import { NotesScreen } from "@/screens/NotesScreen";
-import { TodosScreen } from "@/screens/TodosScreen";
+import { useState } from 'react';
+import { AppProvider } from '@/contexts/AppContext';
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { appConfig } from '@/configs/appConfig';
+import { BrandBar } from '@/components/BrandBar';
+import { NotesScreen } from '@/screens/NotesScreen';
+import { TodosScreen } from '@/screens/TodosScreen';
 
-type Tab = "notes" | "todos";
+type Tab = 'notes' | 'todos';
 
 const TABS: { key: Tab; label: string; glyph: string }[] = [
-  { key: "notes", label: "Notes", glyph: "🗒" },
-  { key: "todos", label: "Todos", glyph: "✅" },
+  { key: 'notes', label: 'Notes', glyph: '🗒' },
+  { key: 'todos', label: 'Todos', glyph: '✅' },
 ];
 
 function Shell() {
-  const [tab, setTab] = useState<Tab>("notes");
+  const [tab, setTab] = useState<Tab>('notes');
   const { colors } = useTheme();
 
   return (
     <div
       style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
         background: colors.background,
         color: colors.text,
         fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
@@ -34,19 +35,19 @@ function Shell() {
     >
       <BrandBar />
 
-      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-        {tab === "notes" ? <NotesScreen /> : <TodosScreen />}
+      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        {tab === 'notes' ? <NotesScreen /> : <TodosScreen />}
       </div>
 
       <div
         style={{
-          display: "flex",
+          display: 'flex',
           borderTop: `1px solid ${colors.border}`,
           background: colors.surface,
           paddingTop: 8,
         }}
       >
-        {TABS.map((t) => {
+        {TABS.map(t => {
           const active = tab === t.key;
           return (
             <button
@@ -55,14 +56,14 @@ function Shell() {
               onClick={() => setTab(t.key)}
               style={{
                 flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 gap: 2,
-                padding: "4px 0 8px",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
+                padding: '4px 0 8px',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
                 color: active ? colors.accent : colors.textMuted,
                 fontWeight: active ? 700 : 400,
               }}
@@ -74,21 +75,34 @@ function Shell() {
                   width: 4,
                   height: 4,
                   borderRadius: 2,
-                  background: active ? colors.accent : "transparent",
+                  background: active ? colors.accent : 'transparent',
                 }}
               />
             </button>
           );
         })}
       </div>
+
+      {/* subtle credit line — the app belongs to the user, TGen only builds it */}
+      <p
+        style={{
+          margin: 0,
+          padding: '6px 0',
+          textAlign: 'center',
+          fontSize: 10,
+          color: colors.textMuted,
+        }}
+      >
+        Made with TGen · v{appConfig.version}
+      </p>
     </div>
   );
 }
 
 export default function App() {
   const systemDark =
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   return (
     <ThemeProvider systemDark={systemDark}>
