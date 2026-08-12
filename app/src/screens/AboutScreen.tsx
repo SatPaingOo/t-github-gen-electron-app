@@ -6,6 +6,7 @@
 import { useTheme } from '@/contexts/ThemeContext';
 import { appConfig, type ThemeMode } from '@/configs/appConfig';
 import { TGenInfo } from '@/configs/constants';
+import type { CSSProperties } from 'react';
 
 const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -16,12 +17,21 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
 export function AboutScreen() {
   const { colors, accent, themeMode, setThemeMode } = useTheme();
 
-  const card = {
+  const card: CSSProperties = {
     background: colors.surface,
-    // longhand so borderLeft can be overridden without React's shorthand conflict warning
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.border,
+    // fully per-side longhand borders — avoids React shorthand/non-shorthand conflicts
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderTopStyle: 'solid',
+    borderRightStyle: 'solid',
+    borderBottomStyle: 'solid',
+    borderLeftStyle: 'solid',
+    borderTopColor: colors.border,
+    borderRightColor: colors.border,
+    borderBottomColor: colors.border,
+    borderLeftColor: colors.border,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -160,7 +170,8 @@ export function AboutScreen() {
       <div
         style={{
           ...card,
-          borderLeft: `4px solid ${accent}`,
+          borderLeftWidth: 4,
+          borderLeftColor: accent,
           display: 'flex',
           alignItems: 'center',
           gap: 12,
