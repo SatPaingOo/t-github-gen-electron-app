@@ -10,12 +10,14 @@ import { appConfig } from '@/configs/appConfig';
 import { BrandBar } from '@/components/BrandBar';
 import { NotesScreen } from '@/screens/NotesScreen';
 import { TodosScreen } from '@/screens/TodosScreen';
+import { AboutScreen } from '@/screens/AboutScreen';
 
-type Tab = 'notes' | 'todos';
+type Tab = 'notes' | 'todos' | 'about';
 
 const TABS: { key: Tab; label: string; glyph: string }[] = [
   { key: 'notes', label: 'Notes', glyph: '🗒' },
   { key: 'todos', label: 'Todos', glyph: '✅' },
+  { key: 'about', label: 'About', glyph: 'ℹ️' },
 ];
 
 function Shell() {
@@ -36,7 +38,13 @@ function Shell() {
       <BrandBar />
 
       <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-        {tab === 'notes' ? <NotesScreen /> : <TodosScreen />}
+        {tab === 'notes' ? (
+          <NotesScreen />
+        ) : tab === 'todos' ? (
+          <TodosScreen />
+        ) : (
+          <AboutScreen />
+        )}
       </div>
 
       <div
