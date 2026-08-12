@@ -18,7 +18,10 @@ export function AboutScreen() {
 
   const card = {
     background: colors.surface,
-    border: `1px solid ${colors.border}`,
+    // longhand so borderLeft can be overridden without React's shorthand conflict warning
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.border,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
