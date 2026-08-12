@@ -1,11 +1,11 @@
 /**
  * AboutScreen — app info + TGen info + in-app theme switcher.
- * Mirrors the RN template (app/screens/AboutScreen.tsx).
+ * Mirrors the RN template (app/screens/AboutScreen.tsx) as HTML.
  */
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { appConfig, type ThemeMode } from '@/configs/appConfig';
-import { TGenInfo, truncate } from '@/configs/constants';
+import { TGenInfo } from '@/configs/constants';
 
 const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -153,40 +153,60 @@ export function AboutScreen() {
         />
       </div>
 
-      {/* TGen info */}
-      <div style={card}>
-        <p
+      {/* TGen info — compact */}
+      <div
+        style={{
+          ...card,
+          borderLeft: `4px solid ${accent}`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
+        <div
           style={{
-            margin: '0 0 10px',
-            fontSize: 13,
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            letterSpacing: 0.4,
-            color: colors.text,
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            background: accent,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            flexShrink: 0,
           }}
         >
-          About TGen
-        </p>
-        <p
-          style={{
-            margin: '0 0 6px',
-            fontSize: 13,
-            lineHeight: 20,
-            color: colors.textMuted,
-          }}
-        >
-          {truncate(TGenInfo.description, 240)}
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: 13,
-            lineHeight: 20,
-            color: colors.textMuted,
-          }}
-        >
-          Powered by TGen · {TGenInfo.url}
-        </p>
+          ⚡
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 14,
+              fontWeight: 700,
+              color: colors.text,
+            }}
+          >
+            Made with {TGenInfo.name}
+          </p>
+          <p
+            style={{ margin: '2px 0 0', fontSize: 12, color: colors.textMuted }}
+          >
+            {TGenInfo.description}
+          </p>
+          <p
+            style={{
+              margin: '3px 0 0',
+              fontSize: 11,
+              color: accent,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {TGenInfo.url}
+          </p>
+        </div>
       </div>
 
       <p

@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { AppProvider } from '@/contexts/AppContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { appConfig } from '@/configs/appConfig';
-import { BrandBar } from '@/components/BrandBar';
 import { NotesScreen } from '@/screens/NotesScreen';
 import { TodosScreen } from '@/screens/TodosScreen';
 import { AboutScreen } from '@/screens/AboutScreen';
@@ -35,8 +34,6 @@ function Shell() {
         fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
       }}
     >
-      <BrandBar />
-
       <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
         {tab === 'notes' ? (
           <NotesScreen />
