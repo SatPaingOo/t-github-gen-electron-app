@@ -11,3 +11,8 @@ build/icon.ico
 # misc
 .DS_Store
 Thumbs.db
+
+# env files
+.env
+.env.*
+!.env.example
