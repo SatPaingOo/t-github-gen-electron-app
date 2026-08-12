@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { AppProvider } from '@/contexts/AppContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
-import { appConfig } from '@/configs/appConfig';
+import { AppHeader } from '@/components/AppHeader';
 import { NotesScreen } from '@/screens/NotesScreen';
 import { TodosScreen } from '@/screens/TodosScreen';
 import { AboutScreen } from '@/screens/AboutScreen';
@@ -34,6 +34,7 @@ function Shell() {
         fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
       }}
     >
+      <AppHeader />
       <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
         {tab === 'notes' ? (
           <NotesScreen />
@@ -87,19 +88,6 @@ function Shell() {
           );
         })}
       </div>
-
-      {/* subtle credit line — the app belongs to the user, TGen only builds it */}
-      <p
-        style={{
-          margin: 0,
-          padding: '6px 0',
-          textAlign: 'center',
-          fontSize: 10,
-          color: colors.textMuted,
-        }}
-      >
-        Made with TGen · v{appConfig.version}
-      </p>
     </div>
   );
 }
