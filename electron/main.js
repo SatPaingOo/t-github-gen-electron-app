@@ -16,7 +16,10 @@ function loadConfig() {
   try {
     return JSON.parse(fs.readFileSync(configPath, 'utf8'));
   } catch (err) {
-    console.warn('[main] failed to read app.config.json, using defaults:', err.message);
+    console.warn(
+      '[main] failed to read app.config.json, using defaults:',
+      err.message,
+    );
     return {
       appName: 'TGen App',
       primaryColor: '#3B82F6',
@@ -77,7 +80,10 @@ function createWindow() {
   });
 
   if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, 'app', 'dist', 'index.html'));
+    // app.asar/app/dist/index.html — vite builds into <repo>/app/dist
+    mainWindow.loadFile(
+      path.join(__dirname, '..', 'app', 'dist', 'index.html'),
+    );
   } else {
     mainWindow.loadURL('http://localhost:5173');
   }
